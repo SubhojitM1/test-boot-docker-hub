@@ -24,10 +24,16 @@ jobs:
           name: Push to docker Image Registry
           shell: /bin/bash
           command: |
-            cd ..
-            sudo docker login --username=subhojitm --password=12345@Redknee
-            sudo docker tag $CIRCLE_PROJECT_REPONAME subhojitm/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+            cd ..  
+            docker images            
+            docker login --username=subhojitm --password=12345@Redknee
+            echo "logged in"
+            sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
+            sudo chmod g+rwx "/home/$USER/.docker" -R
+            docker tag $CIRCLE_PROJECT_REPONAME subhojitm/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+            echo "tagged"
             docker push subhojitm/$CIRCLE_PROJECT_REPONAME
+            echo "pushed"
 workflows:
   version: 2
   build_and_deploy:
