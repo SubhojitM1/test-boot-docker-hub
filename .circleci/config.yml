@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/build
+    machine:
+      image: circleci/classic:edge
+    environment:
+      - BUILD_ENV: dev
+    steps:
+      - checkout:
+          path: $CIRCLE_PROJECT_REPONAME     
+      - run:
+          name: Build s4-lis-internal-api Application
+          shell: /bin/bash
+          command: |
+            cd ~
+            cp build/$CIRCLE_PROJECT_REPONAME/build/build.sh build
+            cp build/$CIRCLE_PROJECT_REPONAME/build/config.sh build
+            cp build/$CIRCLE_PROJECT_REPONAME/build/settings.xml build
+            cd build
+            chmod 777 ./build.sh
+            ./build.sh 
+      - run:
+          name: Push to docker Image Registry
+          shell: /bin/bash
+          command: |
+            cd ..
+            sudo docker login --username=subhojitm --password=12345@Redknee
+            docker tag $CIRCLE_PROJECT_REPONAME subhojitm/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+            docker push subhojitm/$CIRCLE_PROJECT_REPONAME
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
