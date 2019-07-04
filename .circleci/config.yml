@@ -25,8 +25,8 @@ jobs:
           shell: /bin/bash
           command: |
             cd ..
-            sudo docker login --username=subhojitm --password=12345@Redknee
-            docker tag $CIRCLE_PROJECT_REPONAME subhojitm/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
+            sudo docker login --username=subhojitm --password=12345@Redknee --password-stdin
+            sudo docker tag $CIRCLE_PROJECT_REPONAME subhojitm/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
             docker push subhojitm/$CIRCLE_PROJECT_REPONAME
 workflows:
   version: 2
