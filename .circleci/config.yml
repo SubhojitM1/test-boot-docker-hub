@@ -1,4 +1,6 @@
-version: 2
+version: 2.1
+orbs:
+  sonarqube-analyzer: corballis/sonarqube-analyzer@0.1.1
 jobs:
   build:
     working_directory: ~/build
@@ -10,7 +12,7 @@ jobs:
       - checkout:
           path: $CIRCLE_PROJECT_REPONAME     
       - run:
-          name: Build s4-lis-internal-api Application
+          name: Build $CIRCLE_PROJECT_REPONAME Application
           shell: /bin/bash
           command: |
             cd ~
@@ -24,18 +26,14 @@ jobs:
           name: Push to docker Image Registry
           shell: /bin/bash
           command: |
-            cd ..  
-            docker images            
+            cd ..            
             docker login --username=subhojitm --password=12345@Redknee
-            echo "logged in"
             sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
             sudo chmod g+rwx "/home/$USER/.docker" -R
             docker tag $CIRCLE_PROJECT_REPONAME subhojitm/$CIRCLE_PROJECT_REPONAME:$CIRCLE_SHA1
-            echo "tagged"
-            docker push subhojitm/$CIRCLE_PROJECT_REPONAME
-            echo "pushed"
+            docker push subhojitm/$CIRCLE_PROJECT_REPONAME   
 workflows:
-  version: 2
+  version: 2.1
   build_and_deploy:
     jobs:
       - build
